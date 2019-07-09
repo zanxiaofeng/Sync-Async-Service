@@ -13,10 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.base.Throwables;
 import zxf.practices.servlet.util.LongProcessingUtil;
 
-@WebServlet(urlPatterns = "/LongRunningServlet", loadOnStartup = 1)
+@WebServlet(name = "longRunningServlet", urlPatterns = "/LongRunningServlet", loadOnStartup = 1)
 public class LongRunningServlet extends HttpServlet {
     private static final AtomicInteger callCounter = new AtomicInteger(0);
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int calltimes = callCounter.incrementAndGet();
         System.out.println("LongRunningServlet       ::" + calltimes + "::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
@@ -41,6 +42,4 @@ public class LongRunningServlet extends HttpServlet {
                     + (endTime - startTime) + " ms." + result);
         }
     }
-
-
 }

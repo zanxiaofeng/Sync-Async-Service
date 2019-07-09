@@ -14,38 +14,39 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
 
-@WebServlet(urlPatterns = "/AsyncLongRunningServlet", asyncSupported = true)
+@WebServlet(name = "asyncLongRunningServlet", urlPatterns = "/AsyncLongRunningServlet", loadOnStartup = 1, asyncSupported = true)
 public class AsyncLongRunningServlet extends HttpServlet {
-	private static final AtomicInteger callCounter = new AtomicInteger(0);
+    private static final AtomicInteger callCounter = new AtomicInteger(0);
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (!Strings.isNullOrEmpty(request.getParameter("setthreadcount"))) {
-			ThreadPoolExecutor executor = (ThreadPoolExecutor) request.getServletContext().getAttribute("executor");
-			executor.setCorePoolSize(Integer.valueOf(request.getParameter("setthreadcount")));
-			executor.setMaximumPoolSize(Integer.valueOf(request.getParameter("setthreadcount")));
-			PrintWriter output = response.getWriter();
-			output.write("Processing done for set thread count to " + request.getParameter("setthreadcount") + ".");
-		} else {
-			int calltimes = callCounter.incrementAndGet();
-			System.out.println("AsyncLongRunningServlet  ::" + calltimes + "::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!Strings.isNullOrEmpty(request.getParameter("setthreadcount"))) {
+            ThreadPoolExecutor executor = (ThreadPoolExecutor) request.getServletContext().getAttribute("executor");
+            executor.setCorePoolSize(Integer.valueOf(request.getParameter("setthreadcount")));
+            executor.setMaximumPoolSize(Integer.valueOf(request.getParameter("setthreadcount")));
+            PrintWriter output = response.getWriter();
+            output.write("Processing done for set thread count to " + request.getParameter("setthreadcount") + ".");
+        } else {
+            int calltimes = callCounter.incrementAndGet();
+            System.out.println("AsyncLongRunningServlet  ::" + calltimes + "::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
 
-			long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
 
-			request.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
-			AsyncContext asyncCtx = request.startAsync();
-			asyncCtx.addListener(new AsyncEventListener(calltimes));
-			asyncCtx.setTimeout(600000);
+            request.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
+            AsyncContext asyncCtx = request.startAsync();
+            asyncCtx.addListener(new AsyncEventListener(calltimes));
+            asyncCtx.setTimeout(600000);
 
-			ThreadPoolExecutor executor = (ThreadPoolExecutor) request.getServletContext().getAttribute("executor");
+            ThreadPoolExecutor executor = (ThreadPoolExecutor) request.getServletContext().getAttribute("executor");
 
-			int fact = Integer.valueOf(request.getParameter("fact"));
-			int sleepSecs = Integer.valueOf(request.getParameter("time"));
-			executor.execute(new AsyncRequestProcessor(asyncCtx, calltimes, fact, sleepSecs));
+            int fact = Integer.valueOf(request.getParameter("fact"));
+            int sleepSecs = Integer.valueOf(request.getParameter("time"));
+            executor.execute(new AsyncRequestProcessor(asyncCtx, calltimes, fact, sleepSecs));
 
-			long endTime = System.currentTimeMillis();
+            long endTime = System.currentTimeMillis();
 
-			System.out.println("AsyncLongRunningServlet  ::" + calltimes + "::doGet::End::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
-					+ (endTime - startTime) + " ms::" + executor.getActiveCount() + "-" + (executor.getTaskCount() - executor.getCompletedTaskCount()) + ":" + executor.getCompletedTaskCount());
-		}
-	}
+            System.out.println("AsyncLongRunningServlet  ::" + calltimes + "::doGet::End::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
+                    + (endTime - startTime) + " ms::" + executor.getActiveCount() + "-" + (executor.getTaskCount() - executor.getCompletedTaskCount()) + ":" + executor.getCompletedTaskCount());
+        }
+    }
 }
