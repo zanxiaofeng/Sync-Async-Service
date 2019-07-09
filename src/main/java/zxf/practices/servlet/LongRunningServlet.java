@@ -17,10 +17,9 @@ import zxf.practices.servlet.util.LongProcessingUtil;
 public class LongRunningServlet extends HttpServlet {
     private static final AtomicInteger callCounter = new AtomicInteger(0);
 
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int calltimes = callCounter.incrementAndGet();
-        System.out.println("LongRunningServlet       ::" + calltimes + "::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
+        int callTimes = callCounter.incrementAndGet();
+        System.out.println("LongRunningServlet       ::" + callTimes + "::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
 
         long startTime = System.currentTimeMillis();
 
@@ -37,9 +36,9 @@ public class LongRunningServlet extends HttpServlet {
         } catch (Throwable e) {
             System.out.println(Throwables.getStackTraceAsString(e));
         } finally {
-            long endTime = System.currentTimeMillis();
-            System.out.println("LongRunningServlet       ::" + calltimes + "::doGet::End::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
-                    + (endTime - startTime) + " ms." + result);
+            long useTime = System.currentTimeMillis() - startTime;
+            System.out.println("LongRunningServlet       ::" + callTimes + "::doGet::End  ::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
+                    + useTime + " ms." + result);
         }
     }
 }

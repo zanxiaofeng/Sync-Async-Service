@@ -34,7 +34,7 @@ public class AsyncRequestProcessor implements Runnable {
         } finally {
             long endTime = System.currentTimeMillis();
             ThreadPoolExecutor executor = (ThreadPoolExecutor) asyncContext.getRequest().getServletContext().getAttribute("executor");
-            System.out.println("AsyncRequestProcessor    ::" + callTimes + "::run::End::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
+            System.out.println("AsyncRequestProcessor    ::" + callTimes + "::run::End  ::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
                     + (endTime - startTime) + " ms::" + executor.getActiveCount() + "-" + (executor.getTaskCount() - executor.getCompletedTaskCount()) + ":" + executor.getCompletedTaskCount());
             asyncContext.complete();
         }

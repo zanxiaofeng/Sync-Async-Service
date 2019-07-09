@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 public class AsyncContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         System.out.println("AsyncContextListener::contextInitialized::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
-        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("practices-asynservlet-%d").build();
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("practices-async-servlet-%d").build();
         ThreadPoolExecutor executor = new ThreadPoolExecutor(200, 200, 80000L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(10000), threadFactory);
         servletContextEvent.getServletContext().setAttribute("executor", executor);
         System.out.println("AsyncContextListener::contextInitialized::End::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());

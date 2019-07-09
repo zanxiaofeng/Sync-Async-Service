@@ -3,10 +3,10 @@ package zxf.practices.servlet.util;
 import com.google.common.base.Throwables;
 
 public class LongProcessingUtil {
-    public static long longProcessing(long value, int sleepSecs) {
+    public static long longProcessing(long fact, int sleepSecs) {
         long result = 0;
         for (int i = 0; i < sleepSecs / 8; i++) {
-            result = longProcessingInternal(value, (long) (6000 * Math.random()));
+            result = longProcessingInternal(fact, (long) (6000 * Math.random()));
         }
         return result;
     }
