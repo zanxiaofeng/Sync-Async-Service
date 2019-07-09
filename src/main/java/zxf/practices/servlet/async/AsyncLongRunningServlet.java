@@ -16,12 +16,10 @@ import com.google.common.base.Strings;
 
 @WebServlet(urlPatterns = "/AsyncLongRunningServlet", asyncSupported = true)
 public class AsyncLongRunningServlet extends HttpServlet {
-	private static final long serialVersionUID = 10000L;
 	private static final AtomicInteger callCounter = new AtomicInteger(0);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (!Strings.isNullOrEmpty(request.getParameter("setthreadcount"))) {
-			//手动调整线程数以适应当前系统中IO任务和计算任务的分布情况。
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) request.getServletContext().getAttribute("executor");
 			executor.setCorePoolSize(Integer.valueOf(request.getParameter("setthreadcount")));
 			executor.setMaximumPoolSize(Integer.valueOf(request.getParameter("setthreadcount")));
