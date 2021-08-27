@@ -13,32 +13,32 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.base.Throwables;
 import zxf.practices.servlet.util.LongProcessingUtil;
 
-@WebServlet(name = "longRunningServlet", urlPatterns = "/LongRunningServlet", loadOnStartup = 1)
-public class LongRunningServlet extends HttpServlet {
+@WebServlet(name = "Sync", urlPatterns = "/SyncLongRunningServlet", loadOnStartup = 1)
+public class SyncLongRunningServlet extends HttpServlet {
     private static final AtomicInteger callCounter = new AtomicInteger(0);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int callTimes = callCounter.incrementAndGet();
-        System.out.println("LongRunningServlet       ::" + callTimes + "::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId());
+        System.out.println("SyncLongRunningServlet   ::" + callTimes + "::doGet::Start::Name=" + Thread.currentThread().getName());
 
         long startTime = System.currentTimeMillis();
 
-        long result = 0;
         try {
-            int fact = Integer.valueOf(request.getParameter("fact"));
-            int sleepSecs = Integer.valueOf(request.getParameter("time"));
+            int number = Integer.valueOf(request.getParameter("number"));
+            int sleeps = Integer.valueOf(request.getParameter("sleeps"));
 
             // Set java stack size please use -Xss16M
-            result = LongProcessingUtil.longProcessing(fact, sleepSecs);
+            LongProcessingUtil.longProcessingAndSleep(number, sleeps);
 
-            PrintWriter output = response.getWriter();
-            output.write("Processing done for " + sleepSecs + " seconds!!" + result);
+            try (PrintWriter output = response.getWriter()) {
+                output.write("Sync processing done for number: " + number + ", sleeps: " + sleeps);
+            }
         } catch (Throwable e) {
             System.out.println(Throwables.getStackTraceAsString(e));
         } finally {
             long useTime = System.currentTimeMillis() - startTime;
-            System.out.println("LongRunningServlet       ::" + callTimes + "::doGet::End  ::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + "::Time Taken="
-                    + useTime + " ms." + result);
+            System.out.println("SyncLongRunningServlet   ::" + callTimes + "::doGet::End  ::Name=" + Thread.currentThread().getName() + "::Time Taken="
+                    + useTime + "ms.");
         }
     }
 }

@@ -1,7 +1,7 @@
 plugins {
     id 'war'
     id 'java'
-    id 'org.gretty' version '2.2.0'
+    id 'org.gretty' version '2.3.0'
 }
 
 repositories {
@@ -9,7 +9,7 @@ repositories {
 }
 
 gretty {
-    servletContainer 'tomcat8'
+    servletContainer = 'tomcat8'
 }
 
 dependencies {
